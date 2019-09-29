@@ -102,4 +102,45 @@ RSpec.describe Api::V1::AdvertsController, type: :request do
       end
     end
   end
+
+  describe 'POST api/v1/advert' do
+    before { sign_in user }
+
+    context 'with correct attributes' do
+      let(:image) { fixture_file_upload(Rails.root.join('spec', 'support', 'assets', 'test_image.jpg'), 'image/jpg') }
+
+      it 'create advert' do
+        expect do
+          post '/api/adverts', params: { format: :json,
+                                         image: image,
+                                         title: 'title test',
+                                         description: 'Test description',
+                                         price: '10_000' }
+        end.to change(Advert, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+
+        advert = Advert.last
+        expect(advert.image.attached?).to eq true
+        expect(advert.title).to eq 'title test'
+        expect(advert.description).to eq 'Test description'
+        expect(advert.price).to eq 10_000
+      end
+    end
+
+    context 'with uncorrect attributes' do
+      let(:image) { fixture_file_upload(Rails.root.join('spec', 'support', 'assets', 'test_image.jpg'), 'image/jpg') }
+
+      it 'no create advert' do
+        expect do
+          post '/api/adverts', params: { format: :json,
+                                         image: image,
+                                         title: '',
+                                         description: 'Test description',
+                                         price: '10_000' }
+        end.not_to change(Advert, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 end

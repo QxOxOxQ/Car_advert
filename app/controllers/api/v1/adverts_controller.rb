@@ -19,7 +19,14 @@ class Api::V1::AdvertsController < ApplicationController
     render json: adverts
   end
 
-  def create; end
+  def create
+    advert = current_user.adverts.new(advert_params)
+    if advert.save
+      render json: advert, status: :created
+    else
+      render json: advert, status: :unprocessable_entity
+    end
+  end
 
   def update; end
 
@@ -27,5 +34,7 @@ class Api::V1::AdvertsController < ApplicationController
 
   private
 
-  def advert_params; end
+  def advert_params
+    params.permit(:price, :title, :description, :image)
+  end
 end

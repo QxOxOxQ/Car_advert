@@ -20,6 +20,8 @@ class AdvertSerializer < ActiveModel::Serializer
   private
 
   def image_path
+    return unless object.image.attached?
+
     rails_blob_path(object.image, only_path: true)
   end
 
@@ -37,6 +39,8 @@ class AdvertSerializer < ActiveModel::Serializer
   end
 
   def path(action)
+    return unless object&.id
+
     url_for(controller: 'api/v1/adverts', action: action, id: object.id, only_path: true)
   end
 end
