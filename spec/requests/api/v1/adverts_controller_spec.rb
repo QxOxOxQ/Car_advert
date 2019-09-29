@@ -184,8 +184,6 @@ RSpec.describe Api::V1::AdvertsController, type: :request do
     context 'when user is not owner' do
       let!(:advert2) { create(:advert) }
 
-      let(:image) { fixture_file_upload(Rails.root.join('spec', 'support', 'assets', 'test_image.jpg'), 'image/jpg') }
-
       it 'no create advert' do
         expect do
           put "/api/adverts/#{advert2.id}.json", params: {
@@ -194,6 +192,31 @@ RSpec.describe Api::V1::AdvertsController, type: :request do
             price: '10_000'
           }
         end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe 'DELETE api/v1/advert' do
+    before { sign_in user }
+
+    let!(:advert) { create(:advert, user: user) }
+
+    it 'delete advert' do
+      expect do
+        delete "/api/adverts/#{advert.id}.json"
+      end.to change(Advert, :count).by(-1)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    context 'when user is not owner' do
+      let!(:advert2) { create(:advert) }
+
+      it 'no delete advert' do
+        expect do
+          delete "/api/adverts/#{advert2.id}.json"
+        end.to raise_error(ActiveRecord::RecordNotFound)
+          .and change(Advert, :count).by(0)
       end
     end
   end

@@ -37,7 +37,10 @@ class Api::V1::AdvertsController < ApplicationController
     end
   end
 
-  def destroy; end
+  def destroy
+    current_user.adverts.find(params[:id]).destroy!
+    render status: :ok
+  end
 
   private
 
