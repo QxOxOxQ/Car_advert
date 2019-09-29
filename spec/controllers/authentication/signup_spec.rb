@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'POST /signup', type: :request do
   let(:url) { '/signup' }
-
 
   context 'when user is unauthenticated' do
     let(:params) do
@@ -13,6 +14,7 @@ RSpec.describe 'POST /signup', type: :request do
         }
       }
     end
+
     before { post url, params: params }
 
     it 'returns 200' do
@@ -25,7 +27,7 @@ RSpec.describe 'POST /signup', type: :request do
   end
 
   context 'when user already exists' do
-    let!(:user) { create(:user)}
+    let!(:user) { create(:user) }
     let(:params) do
       {
         user: {
@@ -34,6 +36,7 @@ RSpec.describe 'POST /signup', type: :request do
         }
       }
     end
+
     before do
       post url, params: params
     end

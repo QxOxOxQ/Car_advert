@@ -1,0 +1,24 @@
+require: rubocop-rspec
+
+Rails:
+  Enabled: true
+
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - app/assets/images/**/*
+    - app/assets/javascripts/**/*
+    - app/helpers/**/*
+    - bin/*
+    - Rakefile
+    - config/**/*
+    - spec/spec_helper.rb
+    - spec/rails_helper.rb
+    - db/**/*
+
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
