@@ -3,7 +3,7 @@
 class AdvertSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
 
-  attributes :title, :description, :price, :paths
+  attributes :id, :title, :description, :price, :paths
 
   def paths
     output = { self: path('show'),
@@ -24,7 +24,8 @@ class AdvertSerializer < ActiveModel::Serializer
   end
 
   def owner?
-    object.user_id == current_user.id
+    current_user &&
+      object.user_id == current_user.id
   end
 
   def destroy_path
