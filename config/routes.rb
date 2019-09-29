@@ -10,4 +10,10 @@ Rails.application.routes.draw do
                sessions: 'sessions',
                registrations: 'registrations'
              }
+
+  namespace :api, defaults: {format: :json} do
+    scope module: :v1 do
+      resources :adverts, only: [:index, :show, :create, :update, :destroy]
+    end
+  end
 end
