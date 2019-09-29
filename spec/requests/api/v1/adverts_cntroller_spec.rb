@@ -143,4 +143,58 @@ RSpec.describe Api::V1::AdvertsController, type: :request do
       end
     end
   end
+
+  describe 'PUT api/v1/advert' do
+    before { sign_in user }
+
+    let!(:advert) { create(:advert, user: user) }
+
+    context 'with correct attributes' do
+      it 'update advert' do
+        put "/api/adverts/#{advert.id}.json", params: {
+          title: 'title test',
+          description: 'Test description',
+          price: '10_000'
+        }
+
+        expect(response).to have_http_status(:created)
+
+        advert.reload
+
+        expect(advert.image.attached?).to eq true
+        expect(advert.title).to eq 'title test'
+        expect(advert.description).to eq 'Test description'
+        expect(advert.price).to eq 10_000
+      end
+    end
+
+    context 'with uncorrect attributes' do
+      let(:image) { fixture_file_upload(Rails.root.join('spec', 'support', 'assets', 'test_image.jpg'), 'image/jpg') }
+
+      it 'no create advert' do
+        put "/api/adverts/#{advert.id}.json", params: {
+          title: '',
+          description: 'Test description',
+          price: '10_000'
+        }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when user is not owner' do
+      let!(:advert2) { create(:advert) }
+
+      let(:image) { fixture_file_upload(Rails.root.join('spec', 'support', 'assets', 'test_image.jpg'), 'image/jpg') }
+
+      it 'no create advert' do
+        expect do
+          put "/api/adverts/#{advert2.id}.json", params: {
+            title: 'test title',
+            description: 'Test description',
+            price: '10_000'
+          }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end

@@ -28,7 +28,14 @@ class Api::V1::AdvertsController < ApplicationController
     end
   end
 
-  def update; end
+  def update
+    advert = current_user.adverts.find(params[:id])
+    if advert.update(advert_params)
+      render json: advert, status: :created
+    else
+      render json: advert, status: :unprocessable_entity
+    end
+  end
 
   def destroy; end
 
