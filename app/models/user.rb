@@ -7,4 +7,6 @@ class User < ApplicationRecord
 
   validates :email, uniqueness: true, case_sensitive: false
   validates :email, :password, presence: true
+
+  has_many :adverts
 end

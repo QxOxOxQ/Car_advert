@@ -2,6 +2,7 @@
 
 class Advert < ApplicationRecord
   has_one_attached :image
+  belongs_to :user
 
   validates :description, :title, :price, presence: true
   validates :description, length: { maximum: 10_000 }
